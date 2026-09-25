@@ -1,0 +1,16 @@
+{
+  "name": "preflight-review",
+  "version": "1.0.0",
+  "description": "Asisten harian developer via Atria API: review diff, commit message, triage error, tanya-jawab",
+  "type": "module",
+  "bin": {
+    "preflight-review": "bin/preflight-review.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin/preflight-review.js"
+  ],
+  "license": "MIT"
+}
