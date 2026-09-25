@@ -3,6 +3,8 @@
 > **Preflight your code before it ships.** An AI developer companion that lives in your terminal —
 > review diffs, write commit messages, and triage errors without leaving the shell.
 
+**Language**: **English** | [Bahasa Indonesia](./README.id.md)
+
 [![Made with Atria Dawn Preview](https://img.shields.io/badge/powered%20by-Atria%20Dawn%20Preview-7b5cff)](https://atria-asi.ai)
 [![Zero dependencies](https://img.shields.io/badge/dependencies-zero-2ea043)](#)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org)
