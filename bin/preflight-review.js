@@ -80,7 +80,7 @@ function clearLine() {
   stdout.write("\r\x1b[K");
 }
 
-async function sendAtria(system, user, maxTokens = 4096) {
+async function sendAtria(system, user, maxTokens = 16384) {
   const body = {
     model: MODEL,
     max_completion_tokens: maxTokens,
@@ -136,6 +136,7 @@ async function sendAtria(system, user, maxTokens = 4096) {
   let buffer = "";
   let out = "";
   let first = true;
+  let finishReason = null;
   try {
     while (true) {
       const { done, value } = await reader.read();
@@ -155,6 +156,9 @@ async function sendAtria(system, user, maxTokens = 4096) {
           continue;
         }
         const delta = json?.choices?.[0]?.delta?.content;
+        if (json?.choices?.[0]?.finish_reason) {
+          finishReason = json.choices[0].finish_reason;
+        }
         if (delta) {
           if (first) {
             clearInterval(spinnerTimer);
@@ -171,6 +175,12 @@ async function sendAtria(system, user, maxTokens = 4096) {
   }
   if (first) clearLine(); // tidak ada token sama sekali
   if (out) stdout.write("\n");
+  if (finishReason === "length") {
+    console.error(
+      `\n${C.yellow}⚠ Jawaban terpotong karena mencapai batas ${maxTokens} token.${C.reset} ` +
+        `Naikkan batas atau persempit pertanyaannya.`
+    );
+  }
   return out;
 }
 
@@ -258,7 +268,7 @@ Berikan output singkat dalam Markdown dengan struktur:
 4. **Yang sudah bagus** (1-2 poin saja)
 Fokus pada benar/salah dan risiko, bukan gaya penulisan. Jangan ulas baris yang hanya dipindah.`;
   const out = await sendAtria(system, `Review diff ini:\n\n\`\`\`diff\n${diff}\n\`\`\``);
-  if (!out) console.log(`${C.yellow}(respons kosong)${C.reset}`);
+  if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
 }
 
 async function commitMsg(opts) {
@@ -273,7 +283,7 @@ type: feat, fix, refactor, perf, docs, test, chore, style, ci.
 Keluarkan 3 alternatif subjek berbeda (bukan 3 versi sama), tanpa penjelasan tambahan.`;
   console.log(`\n${C.cyan}Usulan commit message:${C.reset}\n`);
   const out = await sendAtria(system, `Diff staged:\n\n\`\`\`diff\n${truncate(diff, opts.maxDiff)}\n\`\`\``);
-  if (!out) console.log(`${C.yellow}(respons kosong)${C.reset}`);
+  if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
   console.log(`\n${C.dim}Kalau sudah fix, contoh pakainya:${C.reset}\n  git commit -m "<pilih salah satu>"`);
 }
 
@@ -292,7 +302,7 @@ Jangan menebak tanpa dasar; kalau log kurang jelas, sebutkan info tambahan apa y
     system,
     `Berikut log/trace error:\n\n\`\`\`log\n${truncate(content, opts.maxDiff)}\n\`\`\``
   );
-  if (!out) console.log(`${C.yellow}(respons kosong)${C.reset}`);
+  if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
 }
 
 async function ask(opts) {
@@ -303,7 +313,7 @@ async function ask(opts) {
   }
   const system = `Jawab sebagai asisten teknis. Ringkas, langsung ke poin, kode disertai penjelasan singkat.`;
   const out = await sendAtria(system, question);
-  if (!out) console.log(`${C.yellow}(respons kosong)${C.reset}`);
+  if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
 }
 
 async function main() {
