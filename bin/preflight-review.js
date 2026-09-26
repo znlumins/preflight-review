@@ -127,8 +127,10 @@ async function sendAtria(system, user, maxTokens = 4096) {
   const decoder = new TextDecoder();
   const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
   let frame = 0;
+  const started = Date.now();
   let spinnerTimer = setInterval(() => {
-    stdout.write(`\r${C.cyan}${frames[frame++ % frames.length]}${C.reset} ${C.dim}menunggu respons Atria...${C.reset}`);
+    const secs = Math.floor((Date.now() - started) / 1000);
+    stdout.write(`\r${C.cyan}${frames[frame++ % frames.length]}${C.reset} ${C.dim}menunggu respons Atria... ${secs}s${C.reset}`);
   }, 120);
 
   let buffer = "";
