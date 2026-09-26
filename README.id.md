@@ -50,6 +50,19 @@ npm install -g .
 
 </details>
 
+<details>
+<summary><b>Install dari GitHub Packages sebagai gantinya</b></summary>
+
+```bash
+npm config set @znlumins:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken <pat-github-kamu>   # PAT dengan scope read:packages
+npm install -g @znlumins/preflight-review
+```
+
+Command-nya tetap sama — hanya nama package yang di-scope ke `@znlumins`.
+
+</details>
+
 ### 🔐 API key
 
 CLI membaca API key Atria dari environment variable `ATRIA_API_KEY`.
