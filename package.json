@@ -1,6 +1,6 @@
 {
-  "name": "@znlumins/preflight-review",
-  "version": "1.0.0",
+  "name": "preflight-review",
+  "version": "1.0.1",
   "description": "AI developer companion in your terminal - review diffs, write commit messages, triage errors. Powered by Atria Dawn Preview.",
   "type": "module",
   "bin": {
@@ -35,8 +35,5 @@
     "url": "https://github.com/znlumins/preflight-review/issues"
   },
   "author": "znlumins",
-  "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  }
+  "license": "MIT"
 }

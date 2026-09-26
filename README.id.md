@@ -53,12 +53,9 @@ npm install -g .
 <summary><b>Install dari GitHub Packages sebagai gantinya</b></summary>
 
 ```bash
-npm config set @znlumins:registry https://npm.pkg.github.com
 npm config set //npm.pkg.github.com/:_authToken <pat-github-kamu>   # PAT dengan scope read:packages
-npm install -g @znlumins/preflight-review
+npm install -g preflight-review --registry=https://npm.pkg.github.com
 ```
-
-Command-nya tetap sama — hanya nama package yang di-scope ke `@znlumins`.
 
 </details>
 

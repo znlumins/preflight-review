@@ -53,12 +53,9 @@ npm install -g .
 <summary><b>Install from GitHub Packages instead</b></summary>
 
 ```bash
-npm config set @znlumins:registry https://npm.pkg.github.com
 npm config set //npm.pkg.github.com/:_authToken <your-github-pat>   # PAT with read:packages
-npm install -g @znlumins/preflight-review
+npm install -g preflight-review --registry=https://npm.pkg.github.com
 ```
-
-The command stays the same — only the package name is scoped to `@znlumins`.
 
 </details>
 
