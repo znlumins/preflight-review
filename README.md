@@ -172,6 +172,9 @@ preflight-review ask --file src/auth.py    # attach a file as context
   not screenshots or PDFs.
 - The model reasons before answering, so latency varies from a few seconds to over a minute.
   Streaming plus a spinner keeps you informed while it thinks.
+- Reasoning tokens count toward the output budget. The CLI uses a 16,384-token budget so
+  reasoning can't starve the answer; if a response still gets cut off, it warns instead of
+  ending silently.
 - Rate limits are shared across all keys on your account per minute. On HTTP `429`, wait and retry.
 - Diffs are truncated at `--max-diff` characters (the model has a 256K context window).
 

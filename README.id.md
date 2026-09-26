@@ -172,6 +172,8 @@ preflight-review ask --file src/auth.py    # lampirkan file sebagai konteks
   bukan screenshot atau PDF.
 - Model berpikir (reasoning) sebelum menjawab, jadi latensi bisa dari beberapa detik sampai lebih dari satu menit.
   Streaming dan spinner membantu kamu tahu bahwa proses sedang berjalan.
+- Token reasoning ikut dihitung dalam budget output. CLI memakai budget 16.384 token agar reasoning
+  tidak menghabiskan seluruh jawaban; kalau tetap terpotong, akan ada peringatan, bukan diam saja.
 - Rate limit dibagikan per menit untuk semua key di akunmu. Kalau dapat HTTP `429`, tunggu sebentar lalu coba lagi.
 - Diff dipotong otomatis sesuai `--max-diff` karakter (context window model 256K).
 
