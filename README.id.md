@@ -30,9 +30,7 @@ Bisa dipakai di **repo git apa pun, bahasa apa pun**, dari shell mana pun — Po
 ## 📦 Instalasi
 
 ```bash
-git clone https://github.com/znlumins/preflight-review.git
-cd preflight-review
-npm install -g .
+npm install -g preflight-review
 ```
 
 Pastikan sudah masuk PATH:
@@ -40,6 +38,17 @@ Pastikan sudah masuk PATH:
 ```bash
 preflight-review --help
 ```
+
+<details>
+<summary><b>Install dari source sebagai gantinya</b></summary>
+
+```bash
+git clone https://github.com/znlumins/preflight-review.git
+cd preflight-review
+npm install -g .
+```
+
+</details>
 
 ### 🔐 API key
 

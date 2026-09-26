@@ -1,7 +1,7 @@
 {
   "name": "preflight-review",
   "version": "1.0.0",
-  "description": "Asisten harian developer via Atria API: review diff, commit message, triage error, tanya-jawab",
+  "description": "AI developer companion in your terminal - review diffs, write commit messages, triage errors. Powered by Atria Dawn Preview.",
   "type": "module",
   "bin": {
     "preflight-review": "bin/preflight-review.js"
@@ -10,7 +10,30 @@
     "node": ">=18"
   },
   "files": [
-    "bin/preflight-review.js"
+    "bin/preflight-review.js",
+    "README.md",
+    "README.id.md",
+    "LICENSE"
   ],
+  "keywords": [
+    "cli",
+    "developer-tools",
+    "code-review",
+    "ai",
+    "git",
+    "atria",
+    "terminal",
+    "commit-message",
+    "debugging"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/znlumins/preflight-review.git"
+  },
+  "homepage": "https://github.com/znlumins/preflight-review#readme",
+  "bugs": {
+    "url": "https://github.com/znlumins/preflight-review/issues"
+  },
+  "author": "znlumins",
   "license": "MIT"
 }

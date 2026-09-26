@@ -30,9 +30,7 @@ It works in **any git repo, in any language**, from any shell — PowerShell, ba
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/znlumins/preflight-review.git
-cd preflight-review
-npm install -g .
+npm install -g preflight-review
 ```
 
 Verify it's on your PATH:
@@ -40,6 +38,17 @@ Verify it's on your PATH:
 ```bash
 preflight-review --help
 ```
+
+<details>
+<summary><b>Install from source instead</b></summary>
+
+```bash
+git clone https://github.com/znlumins/preflight-review.git
+cd preflight-review
+npm install -g .
+```
+
+</details>
 
 ### 🔐 API key
 
