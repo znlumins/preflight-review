@@ -5,7 +5,6 @@
 
 **Bahasa**: [English](./README.md) | **Bahasa Indonesia**
 
-[![Made with Atria Dawn Preview](https://img.shields.io/badge/powered%20by-Atria%20Dawn%20Preview-7b5cff)](https://atria-asi.ai)
 [![Zero dependencies](https://img.shields.io/badge/dependencies-zero-2ea043)](#)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)](#)
@@ -67,6 +66,9 @@ Command-nya tetap sama — hanya nama package yang di-scope ke `@znlumins`.
 
 CLI membaca API key Atria dari environment variable `ATRIA_API_KEY`.
 Buat key di [console Atria](https://atria-asi.ai/console), lalu:
+
+> **Catatan:** tool ini hanya kompatibel dengan **API key Atria** — dia cuma terhubung ke Atria API.
+> Key dari OpenAI, Anthropic, Google, atau provider lain **tidak** bisa dipakai.
 
 **macOS / Linux**
 ```bash

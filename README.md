@@ -5,7 +5,6 @@
 
 **Language**: **English** | [Bahasa Indonesia](./README.id.md)
 
-[![Made with Atria Dawn Preview](https://img.shields.io/badge/powered%20by-Atria%20Dawn%20Preview-7b5cff)](https://atria-asi.ai)
 [![Zero dependencies](https://img.shields.io/badge/dependencies-zero-2ea043)](#)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)](#)
@@ -67,6 +66,9 @@ The command stays the same — only the package name is scoped to `@znlumins`.
 
 The CLI reads your Atria API key from the `ATRIA_API_KEY` environment variable.
 Create a key in the [Atria console](https://atria-asi.ai/console), then:
+
+> **Note:** this tool only works with an **Atria API key** — it talks exclusively to the Atria API.
+> Keys from OpenAI, Anthropic, Google, or other providers are **not** compatible.
 
 **macOS / Linux**
 ```bash
