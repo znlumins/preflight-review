@@ -88,6 +88,7 @@ setx ATRIA_API_KEY "atr_xxx"            # then reopen your terminal
 
 ```bash
 preflight-review review
+preflight-review review --save              # also write the result to a markdown file
 ```
 
 By default it reviews staged changes, then unstaged ones, and finally falls back to
@@ -186,7 +187,24 @@ preflight-review ask --file src/auth.py    # attach a file as context
 | `--base <branch>` | Branch to compare against in `review` | `main` |
 | `--file <path>` | Read a file as input (for `ask` / `triage`) | — |
 | `--max-diff <n>` | Max characters of diff/log to send | `60000` |
+| `--save` | Write the result to `.preflight-review/<mode>-<timestamp>.md` | off |
+| `--out <path>` | Write the result to this file (overrides `--save`) | — |
 | `-h`, `--help` | Show help | — |
+
+### Saving results to a file
+
+Add `--save` to any command and the full result is written to the `.preflight-review/`
+folder in your project as markdown, stamped with the date and git commit:
+
+```
+.preflight-review/
+├── review-2026-09-26-143020.md
+├── triage-2026-09-26-151203.md
+└── ask-2026-09-26-160044.md
+```
+
+Each file starts with metadata (date, branch, commit) followed by the full output.
+Use `--out <path>` to pick the filename yourself. The folder is gitignored by default.
 
 ---
 

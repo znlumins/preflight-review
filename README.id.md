@@ -88,6 +88,7 @@ setx ATRIA_API_KEY "atr_xxx"            # lalu buka ulang terminal
 
 ```bash
 preflight-review review
+preflight-review review --save              # sekaligus simpan hasil ke file markdown
 ```
 
 Prioritasnya: perubahan staged → unstaged → membandingkan dengan branch `main`.
@@ -186,7 +187,24 @@ preflight-review ask --file src/auth.py    # lampirkan file sebagai konteks
 | `--base <branch>` | Branch pembanding untuk `review` | `main` |
 | `--file <path>` | Baca file sebagai input (untuk `ask` / `triage`) | — |
 | `--max-diff <n>` | Batas karakter diff/log yang dikirim | `60000` |
+| `--save` | Simpan hasil ke `.preflight-review/<mode>-<timestamp>.md` | mati |
+| `--out <path>` | Simpan hasil ke file ini (menimpa `--save`) | — |
 | `-h`, `--help` | Tampilkan bantuan | — |
+
+### Menyimpan hasil ke file
+
+Tambahkan `--save` di command mana pun dan hasil lengkapnya ditulis ke folder
+`.preflight-review/` di project kamu sebagai markdown, lengkap dengan stempel waktu dan commit:
+
+```
+.preflight-review/
+├── review-2026-09-26-143020.md
+├── triage-2026-09-26-151203.md
+└── ask-2026-09-26-160044.md
+```
+
+Tiap file diawali metadata (tanggal, branch, commit) lalu output lengkapnya.
+Pakai `--out <path>` kalau mau menentukan nama file sendiri. Folder ini sudah di-gitignore.
 
 ---
 

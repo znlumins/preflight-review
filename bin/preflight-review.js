@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
-import { readFileSync, readSync, fstatSync } from "node:fs";
+import { readFileSync, readSync, fstatSync, writeFileSync, mkdirSync } from "node:fs";
 import { argv, exit, stdin, stdout } from "node:process";
 
 const ENDPOINT = "https://api.atria-asi.ai/v1/chat/completions";
@@ -34,6 +34,8 @@ ${C.bold}FLAG${C.reset}
   --base <branch>    Branch pembanding untuk review (default: main)
   --file <path>      Baca isi file sebagai input
   --max-diff <n>     Batas karakter diff (default: ${DEFAULT_MAX_DIFF})
+  --save             Simpan hasil ke .preflight-review/<mode>-<timestamp>.md
+  --out <path>       Simpan hasil ke file ini (menimpa --save)
 
 ${C.bold}CATATAN${C.reset}
   Butuh env var ${C.cyan}ATRIA_API_KEY${C.reset} (sudah diset di Windows).
@@ -43,12 +45,14 @@ ${C.bold}CATATAN${C.reset}
 
 function parseArgs() {
   const [cmd, ...rest] = argv.slice(2);
-  const opts = { base: "main", file: null, maxDiff: DEFAULT_MAX_DIFF, positional: [] };
+  const opts = { base: "main", file: null, maxDiff: DEFAULT_MAX_DIFF, save: false, out: null, positional: [] };
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     if (a === "--base") opts.base = rest[++i];
     else if (a === "--file") opts.file = rest[++i];
     else if (a === "--max-diff") opts.maxDiff = parseInt(rest[++i], 10);
+    else if (a === "--save") opts.save = true;
+    else if (a === "--out") opts.out = rest[++i];
     else if (a === "-h" || a === "--help" || a === "help") opts.help = true;
     else if (a.startsWith("--")) {
       console.error(`${C.red}Flag tidak dikenal:${C.reset} ${a}\nJalankan ${C.cyan}preflight-review --help${C.reset}`);
@@ -238,6 +242,49 @@ function readFileOrThrow(path) {
   }
 }
 
+function saveResult(mode, content, opts) {
+  if (!opts.save && !opts.out) return null;
+  if (!content || !content.trim()) return null;
+
+  const ts = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  const stamp = `${ts.getFullYear()}-${pad(ts.getMonth() + 1)}-${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}`;
+
+  let path;
+  if (opts.out) {
+    path = opts.out;
+    const dir = path.includes("/") || path.includes("\\") ? path.replace(/[/\\][^/\\]+$/, "") : ".";
+    if (dir && dir !== ".") mkdirSync(dir, { recursive: true });
+  } else {
+    const dir = ".preflight-review";
+    mkdirSync(dir, { recursive: true });
+    path = `${dir}/${mode}-${stamp}.md`;
+  }
+
+  const branch = git("rev-parse", "--abbrev-ref", "HEAD");
+  const sha = git("rev-parse", "--short", "HEAD");
+  const header = [
+    `# preflight-review - ${mode}`,
+    ``,
+    `- **Date**: ${ts.toLocaleString()}`,
+    branch ? `- **Branch**: ${branch}` : null,
+    sha ? `- **Commit**: ${sha}` : null,
+    ``,
+    `---`,
+    ``,
+  ]
+    .filter((x) => x !== null)
+    .join("\n");
+
+  try {
+    writeFileSync(path, header + "\n" + content + "\n", "utf8");
+    return path;
+  } catch (e) {
+    console.error(`${C.red}Gagal menyimpan file:${C.reset} ${e.message}`);
+    return null;
+  }
+}
+
 function getDiff(opts) {
   // prioritas: staged > unstaged > vs branch pembanding
   let diff = git("diff", "--cached", "--no-color");
@@ -269,6 +316,8 @@ Berikan output singkat dalam Markdown dengan struktur:
 Fokus pada benar/salah dan risiko, bukan gaya penulisan. Jangan ulas baris yang hanya dipindah.`;
   const out = await sendAtria(system, `Review diff ini:\n\n\`\`\`diff\n${diff}\n\`\`\``);
   if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
+  const saved = saveResult("review", out, opts);
+  if (saved) console.log(`\n${C.dim}Hasil disimpan ke: ${saved}${C.reset}`);
 }
 
 async function commitMsg(opts) {
@@ -284,6 +333,8 @@ Keluarkan 3 alternatif subjek berbeda (bukan 3 versi sama), tanpa penjelasan tam
   console.log(`\n${C.cyan}Usulan commit message:${C.reset}\n`);
   const out = await sendAtria(system, `Diff staged:\n\n\`\`\`diff\n${truncate(diff, opts.maxDiff)}\n\`\`\``);
   if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
+  const saved = saveResult("commit", out, opts);
+  if (saved) console.log(`\n${C.dim}Hasil disimpan ke: ${saved}${C.reset}`);
   console.log(`\n${C.dim}Kalau sudah fix, contoh pakainya:${C.reset}\n  git commit -m "<pilih salah satu>"`);
 }
 
@@ -303,6 +354,8 @@ Jangan menebak tanpa dasar; kalau log kurang jelas, sebutkan info tambahan apa y
     `Berikut log/trace error:\n\n\`\`\`log\n${truncate(content, opts.maxDiff)}\n\`\`\``
   );
   if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
+  const saved = saveResult("triage", out, opts);
+  if (saved) console.log(`\n${C.dim}Hasil disimpan ke: ${saved}${C.reset}`);
 }
 
 async function ask(opts) {
@@ -314,6 +367,8 @@ async function ask(opts) {
   const system = `Jawab sebagai asisten teknis. Ringkas, langsung ke poin, kode disertai penjelasan singkat.`;
   const out = await sendAtria(system, question);
   if (!out) console.log(`${C.yellow}(respons kosong — reasoning model kadang menghabiskan budget token. Coba jalankan lagi.)${C.reset}`);
+  const saved = saveResult("ask", out, opts);
+  if (saved) console.log(`\n${C.dim}Hasil disimpan ke: ${saved}${C.reset}`);
 }
 
 async function main() {
